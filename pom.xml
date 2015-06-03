@@ -38,6 +38,7 @@
 		<oltu.oauth2.version>1.0.0</oltu.oauth2.version>
 		<junit.version>4.11</junit.version>
 		<taobao.sdk.version>20150210</taobao.sdk.version>
+		<cas.version>4.0.1</cas.version>
 	</properties>
 	
 	<dependencyManagement>

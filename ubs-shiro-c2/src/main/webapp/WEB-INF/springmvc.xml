@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd ">
+	
+	<context:component-scan base-package="edu.ustc.action"/>
+	
+	<context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true"/>
+	
+    <mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/plain;charset=UTF-8</value>
+						<value>text/html;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<bean id="freemarkerConfig" class="edu.ustc.utils.ShiroTagFreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/ftl/" />
+		<property name="defaultEncoding" value="${freemarker.default_encoding}" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">${freemarker.template_update_delay}</prop>
+				<prop key="locale">${freemarker.locale}</prop>
+				<prop key="datetime_format">${freemarker.datetime_format}</prop>
+				<prop key="date_format">${freemarker.date_format}</prop>
+				<prop key="number_format">${freemarker.number_format}</prop>
+				<prop key="template_exception_handler">${freemarker.template_exception_handler}</prop>
+				<prop key="classic_compatible">${freemarker.classic_compatible}</prop>
+				<prop key="object_wrapper">${freemarker.object_wrapper}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="viewResolvers" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="defaultContentType" value="application/json" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="excel" value="application/excel" />
+				<entry key="pdf" value="application/pdf" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+					<property name="cache" value="true" />
+					<property name="prefix" value="" />
+					<property name="suffix" value=".ftl" />
+					<property name="contentType" value="text/html;charset=UTF-8" />
+					<property name="requestContextAttribute" value="request" />
+					<property name="exposeRequestAttributes" value="true" />
+					<property name="exposeSessionAttributes" value="true" />
+					<property name="exposeSpringMacroHelpers" value="true" />
+					<property name="allowSessionOverride" value="true" />
+					<property name="attributesMap">
+						<bean class="edu.ustc.utils.StaticModels" />
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Exception">/error.html</prop>
+			</props>
+		</property>
+	</bean> -->
+	
+</beans>

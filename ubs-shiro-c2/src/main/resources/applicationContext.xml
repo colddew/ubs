@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+    <context:component-scan base-package="edu.ustc">
+        <context:exclude-filter type="regex" expression="edu.ustc.action.*"/>
+    </context:component-scan>
+	
+    <context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true"/>
+	
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="${zhizunbao_manage_db_url}"/>
+        <property name="username" value="${zhizunbao_manage_db_username}"/>
+        <property name="password" value="${zhizunbao_manage_db_password}"/>
+        <property name="initialSize" value="20"/>
+        <property name="maxActive" value="1000"/>
+        <property name="maxIdle" value="100"/>
+        <property name="maxWait" value="10000"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="validationQuery" value="select 1 from dual"/>
+        <property name="timeBetweenEvictionRunsMillis" value="10000"/>
+    </bean>
+	
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+	
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:sqlmap/manage/*.xml" />
+		<property name="plugins">
+			<bean class="com.enniu.licai.zhizunbao.manage.common.utils.page.PaginationInterceptor" >
+				<property name="properties">
+					<props><prop key="dialect">MYSQL</prop></props>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+		<property name="basePackage" value="com.enniu.licai.zhizunbao.manage.backstage.dao" />
+	</bean> -->
+	
+	<import resource="applicationContext-shiro.xml"/>
+	
+</beans>

@@ -61,7 +61,8 @@
                    | set its name to something other than its default name (typically the simple class name).
                    -->
                 <entry key-ref="proxyAuthenticationHandler" value-ref="proxyPrincipalResolver" />
-                <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" />
+                <!-- <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" /> -->
+                <entry key-ref="casQueryDatabaseAuthenticationHandler" value-ref="primaryPrincipalResolver" />
             </map>
         </constructor-arg>
 
@@ -104,19 +105,42 @@
        | * org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler
        | * org.jasig.cas.support.spnego.authentication.handler.support.JCIFSSpnegoAuthenticationHandler
        -->
-    <bean id="primaryAuthenticationHandler"
+    <!-- <bean id="primaryAuthenticationHandler"
           class="org.jasig.cas.authentication.AcceptUsersAuthenticationHandler">
         <property name="users">
             <map>
                 <entry key="admin" value="123456"/>
             </map>
         </property>
-    </bean>
-
+    </bean> -->
+    
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value><![CDATA[jdbc:mysql://localhost:3306/mix?useUnicode=true&characterEncoding=UTF-8]]></value>
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>root</value>
+		</property>
+	</bean>
+	
+	<bean id="casPasswordEncoder" class="edu.ustc.utils.CasPasswordEncoder" />
+		
+	<bean id="casQueryDatabaseAuthenticationHandler" class="edu.ustc.utils.CasQueryDatabaseAuthenticationHandler">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="sql" value="select * from sys_user where user_name = ?"></property>
+		<property name="passwordEncoder" ref="casPasswordEncoder"></property>
+	</bean>
+    
     <!-- Required for proxy ticket mechanism -->
     <bean id="proxyPrincipalResolver"
           class="org.jasig.cas.authentication.principal.BasicPrincipalResolver" />
-
+	
     <!--
        | Resolves a principal from a credential using an attribute repository that is configured to resolve
        | against a deployer-specific store (e.g. LDAP).

@@ -14,9 +14,11 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
 	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 	
-	<bean id="casRealm" class="edu.ustc.utils.CasRealm">
+	<bean id="casRealm" class="org.apache.shiro.cas.CasRealm">
 		<!-- <property name="defaultRoles" value="admin"/>
 		<property name="defaultPermissions" value="user:query"/> -->
+		<property name="roleAttributeNames" value="roles" />
+		<property name="permissionAttributeNames" value="permissions" />
 		<property name="casServerUrlPrefix" value="https://localhost:8443" />
 		<property name="casService" value="http://localhost:7071/cas" />
 	</bean>
@@ -49,7 +51,7 @@
 				/casFailure = anon
 				/cas = cas
 				/logout = logout
-				/** = authc
+				/** = authc, roles[shiro-c2]
 			</value>
 		</property>
 	</bean>

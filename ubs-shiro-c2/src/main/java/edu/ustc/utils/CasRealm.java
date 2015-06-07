@@ -11,7 +11,7 @@ public class CasRealm extends org.apache.shiro.cas.CasRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) throws AuthorizationException {
 		
-		String username = (String)principals.getPrimaryPrincipal();
+		String username = (String) principals.getPrimaryPrincipal();
 		System.out.println("#####" + username + "#####");
 		
 //        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
@@ -19,7 +19,7 @@ public class CasRealm extends org.apache.shiro.cas.CasRealm {
 //        authorizationInfo.setStringPermissions(userService.findPermissions(username));
 //        return authorizationInfo;
 		
-		return null;
+		return super.doGetAuthorizationInfo(principals);
 	}
 	
 	@Override

@@ -1,6 +1,10 @@
 package edu.ustc.utils;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -13,6 +17,7 @@ public class CasRealm extends org.apache.shiro.cas.CasRealm {
 	
 	// 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用
 	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) throws AuthorizationException {
 		
 		String username = (String) principals.getPrimaryPrincipal();
@@ -20,11 +25,18 @@ public class CasRealm extends org.apache.shiro.cas.CasRealm {
 		
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         
-        HashSet<String> roles = new HashSet<String>();
-        roles.add("admin");
-        roles.add("shiro-c1");
-        authorizationInfo.setRoles(roles);
+        // 2.服务端授权
+        List list = principals.asList();
+		Map<String, Object> map = (Map<String, Object>) list.get(1);
+        authorizationInfo.setRoles(parseToSet((String) map.get("roles")));
+        authorizationInfo.setStringPermissions(parseToSet((String) map.get("permissions")));
         
+//        HashSet<String> roles = new HashSet<String>();
+//        roles.add("admin");
+//        roles.add("shiro-c1");
+//        authorizationInfo.setRoles(roles);
+        
+        // 1.客户端授权
 //        authorizationInfo.setRoles(userService.findRoles(username));
 //        authorizationInfo.setStringPermissions(userService.findPermissions(username));
         
@@ -38,5 +50,31 @@ public class CasRealm extends org.apache.shiro.cas.CasRealm {
 		System.out.println("#####" + token.getPrincipal() + "#####");
 		
 		return super.doGetAuthenticationInfo(token);
+	}
+	
+	private Set<String> parseToSet(String str) {
+		
+		if(str.indexOf("[") != -1) {
+			str = str.replaceAll("\\[", "");
+		}
+		
+		if(str.indexOf("]") != -1) {
+			str = str.replaceAll("\\]", "");
+		}
+		
+		Set<String> set = new HashSet<String>();
+		
+		if(StringUtils.isNotBlank(str)) {
+			
+			String[] array = str.split(",");
+			for(String item : array) {
+				
+				if(StringUtils.isNotBlank(item)) {
+					set.add(item.trim());
+				}
+			}
+		}
+		
+		return set;
 	}
 }

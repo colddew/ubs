@@ -104,6 +104,11 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-lgpl</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
 	</dependencies>
 	
 	<build>

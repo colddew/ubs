@@ -1,7 +1,6 @@
 package edu.ustc.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +18,13 @@ public class ExtPersonAttributeDao extends StubPersonAttributeDao {
 		
 		List<Object> roles = new ArrayList<Object>();
 		roles.add("shiro-c1");
+		roles.add("shiro-c2");
 		attributes.put("roles", roles);
 		
-		attributes.put("permissions", Collections.singletonList((Object) "portal-c2:list"));
+		List<Object> permissions = new ArrayList<Object>();
+		permissions.add("portal-c1:list");
+//		permissions.add("portal-c2:query");
+		attributes.put("permissions", permissions);
         
 		return new AttributeNamedPersonImpl(attributes);
 	}

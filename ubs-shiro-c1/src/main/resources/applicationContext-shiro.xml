@@ -36,6 +36,8 @@
     <bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
 		<property name="failureUrl" value="/casFailure" />
 	</bean>
+	
+	<bean id="roleOrFilter" class="edu.ustc.utils.RoleOrFilter" />
     
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
@@ -44,16 +46,18 @@
 		<property name="filters">
             <util:map>
                 <entry key="cas" value-ref="casFilter"/>
+                <entry key="roleOrFilter" value-ref="roleOrFilter"/>
             </util:map>
         </property>
-		<property name="filterChainDefinitions">
+		<!-- <property name="filterChainDefinitions">
 			<value>
 				/casFailure = anon
 				/cas = cas
 				/logout = logout
 				/** = authc, roles[shiro-c1]
 			</value>
-		</property>
+		</property> -->
+		<property name="filterChainDefinitions" value="#{authService.loadFilterChainDefinitions()}" />
 	</bean>
 	
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />

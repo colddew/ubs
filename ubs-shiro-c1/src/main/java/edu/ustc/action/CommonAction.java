@@ -20,6 +20,12 @@ public class CommonAction {
 		return "/portal";
 	}
 	
+	@RequestMapping("/portal2")
+	public String portal2() throws Exception {
+		
+		return "/portal2";
+	}
+	
 	@RequestMapping("/casFailure")
 	public String casFailure() throws Exception {
 		

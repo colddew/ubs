@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import edu.ustc.model.Resource;
 import edu.ustc.model.Role;
 
+/**
+ * 新增的URL需要添加到admin角色，否则任何角色都可以随意访问
+ */
 @Service(value = "authService")
 public class AuthServiceImpl implements IAuthService {
 	
@@ -76,7 +79,7 @@ public class AuthServiceImpl implements IAuthService {
 		return rs;
 	}
 	
-	// 根据角色，得到动态权限规则
+	// 根据角色得到动态权限规则
 	private String getDynamicAuthRule() {
 	
 		StringBuffer sb = new StringBuffer();
@@ -113,7 +116,7 @@ public class AuthServiceImpl implements IAuthService {
 		return sb.toString();
     }
 	
-	// 得到固定权限验证规则串
+	// 得到固定权限验证规则
 	private String getFixedAuthRule() {
 		
 		StringBuffer sb = new StringBuffer("");
